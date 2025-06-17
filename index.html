@@ -77,7 +77,7 @@
         });
 
         function downloadPDF(type, index = 1) {
-            const backendURL = 'http://127.0.0.1:5000';
+            const backendURL = 'https://weasyprint-api-cqfz.onrender.com';
             if (type === 'bulk') {
                 window.open(`${backendURL}/pdf/bulk`, '_blank');
             } else if (type === 'individual') {
