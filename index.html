@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Employee Report Viewer</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        button {
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Employee Data</h1>
+
+    <button onclick="downloadPDF('bulk')">Download Bulk PDF</button>
+
+    <table id="employee-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Department</th>
+                <th>Position</th>
+                <th>Download</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data -->
+        </tbody>
+    </table>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const backendURL = 'http://127.0.0.1:5000';
+            const dataURL = `${backendURL}/api/data`;
+
+            fetch(dataURL)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Fetched data:', data);
+                    const tbody = document.querySelector('#employee-table tbody');
+                    data.forEach((person, index) => {
+                        const row = `
+                                <tr>
+                                    <td>${index + 1}</td>
+                                    <td>${person.name}</td>
+                                    <td>${person.email}</td>
+                                    <td>${person.department}</td>
+                                    <td>${person.position}</td>
+                                    <td><button onclick="downloadPDF('individual', ${index + 1})">Download</button></td>
+                                </tr>
+                            `;
+                        tbody.innerHTML += row;
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading data:', error);
+                });
+        });
+
+        function downloadPDF(type, index = 1) {
+            const backendURL = 'http://127.0.0.1:5000';
+            if (type === 'bulk') {
+                window.open(`${backendURL}/pdf/bulk`, '_blank');
+            } else if (type === 'individual') {
+                window.open(`${backendURL}/pdf/individual/${index}`, '_blank');
+            }
+        }
+    </script>
+        
+
+</body>
+
+</html>
